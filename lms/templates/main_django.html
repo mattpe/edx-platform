@@ -1,5 +1,9 @@
 <!DOCTYPE html>
-{% load compressed %}{% load sekizai_tags i18n microsite %}{% load url from future %}{% load staticfiles %}
+{% load compressed %}
+{% load sekizai_tags i18n microsite %}
+{% load url from future %}
+{% load staticfiles %}
+{% load branding_edx_footer %}
 <html lang="{{LANGUAGE_CODE}}">
 <head>
   <meta charset="UTF-8">
@@ -41,7 +45,7 @@
   {% elif IS_EDX_DOMAIN and not ENABLE_FOOTER_V3 %}
     {% include "footer-edx-v2.html" %}
   {% elif IS_EDX_DOMAIN and ENABLE_FOOTER_V3 %}
-    {% include "footer-edx-v3.html" %}
+    {% branding_edx_footer %}
   {% else %}
     {% include "footer.html" %}
   {% endif %}
