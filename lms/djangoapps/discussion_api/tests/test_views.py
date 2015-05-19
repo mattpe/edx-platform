@@ -13,10 +13,8 @@ from django.core.urlresolvers import reverse
 from discussion_api.tests.utils import CommentsServiceMockMixin, make_minimal_cs_thread
 from student.tests.factories import CourseEnrollmentFactory, UserFactory
 from util.testing import UrlResetMixin
-from xmodule.modulestore.django import modulestore
 from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
 from xmodule.modulestore.tests.factories import CourseFactory
-from xmodule.tabs import DiscussionTab
 
 
 class DiscussionAPIViewTestMixin(CommentsServiceMockMixin, UrlResetMixin):
@@ -291,6 +289,11 @@ class CommentViewSetListTest(DiscussionAPIViewTestMixin, ModuleStoreTestCase):
         )
 
     def test_pagination(self):
+        """
+        Test that pagination parameters are correctly plumbed through to the
+        comments service and that a 404 is correctly returned if a page past the
+        end is requested
+        """
         self.register_get_user_response(self.user)
         self.register_get_thread_response(make_minimal_cs_thread({
             "id": self.thread_id,
