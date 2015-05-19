@@ -1444,7 +1444,7 @@ PIPELINE_JS = {
         'output_filename': 'js/ccx.js'
     },
     'footer_edx': {
-        'source_filenames': ['js/footer-edx.js'],
+        'source_filenames': ['js/footer-edx.js'],  # include footer-analytics and footer-load
         'output_filename': path("js") / FOOTER_JS_STATIC_NAME,
     }
 }
