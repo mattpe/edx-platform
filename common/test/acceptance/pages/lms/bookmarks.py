@@ -11,7 +11,7 @@ class BookmarksPage(CoursePage):
     """
     url = None
     url_path = "courseware/"
-    BOOKMARKS_BUTTON_SELECTOR = '.bookmarks-button'
+    BOOKMARKS_BUTTON_SELECTOR = '.bookmarks-list-button'
     BOOKMARKED_ITEMS_SELECTOR = '.bookmarks-results-list .bookmarks-results-list-item'
     BOOKMARKED_BREADCRUMBS = BOOKMARKED_ITEMS_SELECTOR + ' .list-item-breadcrumbtrail'
 
@@ -51,7 +51,7 @@ class BookmarksPage(CoursePage):
     def breadcrumbs(self):
         """ Return list of breadcrumbs for all bookmarks """
         breadcrumbs = self.q(css=self.BOOKMARKED_BREADCRUMBS).text
-        return map(lambda item: item.replace('\n', '').split('-'), breadcrumbs)
+        return [breadcrumb.replace('\n', '').split('-') for breadcrumb in breadcrumbs]
 
     def click_bookmark(self, index):
         """

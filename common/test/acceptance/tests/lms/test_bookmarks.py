@@ -28,14 +28,7 @@ class BookmarksTestMixin(EventsTestMixin, UniqueCourseTest):
     ]
 
     def create_course_fixture(self):
-        self.course_outline_page = CourseOutlinePage(
-            self.browser,
-            self.course_info['org'],
-            self.course_info['number'],
-            self.course_info['run']
-        )
-
-        # Install a course with sections/problems etc
+        """ Create course fixture """
         self.course_fixture = CourseFixture(
             self.course_info['org'], self.course_info['number'],
             self.course_info['run'], self.course_info['display_name']
@@ -54,9 +47,6 @@ class BookmarksTestMixin(EventsTestMixin, UniqueCourseTest):
             )
         ).install()
 
-        # Auto-auth register for the course.
-        AutoAuthPage(self.browser, username=self.USERNAME, email=self.EMAIL, course_id=self.course_id).visit()
-
 
 class BookmarksTest(BookmarksTestMixin):
     """
@@ -68,7 +58,18 @@ class BookmarksTest(BookmarksTestMixin):
         Initialize test setup.
         """
         super(BookmarksTest, self).setUp()
+
+        self.course_outline_page = CourseOutlinePage(
+            self.browser,
+            self.course_info['org'],
+            self.course_info['number'],
+            self.course_info['run']
+        )
+
         self.create_course_fixture()
+
+        # Auto-auth register for the course.
+        AutoAuthPage(self.browser, username=self.USERNAME, email=self.EMAIL, course_id=self.course_id).visit()
 
         self.courseware_page = CoursewarePage(self.browser, self.course_id)
         self.courseware_page.visit()
