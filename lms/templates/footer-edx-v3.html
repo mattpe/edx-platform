@@ -2,6 +2,7 @@
   from django.utils.translation import ugettext as _
   from branding.api import get_footer
 %>
+<%namespace name='static' file='static_content.html'/>
 <% footer = get_footer(is_secure=is_secure) %>
 
 ## WARNING: These files are specific to edx.org and are not used in installations outside of that domain. Open edX users will want to use the file "footer.html" for any changes or overrides.
@@ -50,3 +51,4 @@
         </div>
     </div>
 </footer>
+<script type="text/javascript" src="${static.url('js/vendor/noreferrer.js')}" charset="utf-8"></script>
