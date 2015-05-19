@@ -93,7 +93,7 @@ class SerializerTestMixin(CommentsServiceMockMixin):
 
         The label should be "staff", "staff", or "community_ta" for the
         Administrator, Moderator, and Community TA roles, respectively, but
-        the label should not be present if the thread is anonymous.
+        the label should not be present if the content is anonymous.
 
         role_name is the name of the author's role.
         anonymous is the value of the anonymous field in the content.

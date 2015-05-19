@@ -142,8 +142,9 @@ class CommentViewSet(_ViewMixin, DeveloperErrorViewMixin, ViewSet):
 
         * thread_id (required): The thread to retrieve comments for
 
-        * endorsed: The thread to retrieve comments for. Required for a
-          question thread, must be absent for a discussion thread
+        * endorsed: If specified, only retrieve the endorsed or non-endorsed
+          comments accordingly. Required for a question thread, must be absent
+          for a discussion thread.
 
         * page: The (1-indexed) page to retrieve (default is 1)
 
@@ -171,7 +172,7 @@ class CommentViewSet(_ViewMixin, DeveloperErrorViewMixin, ViewSet):
             * updated_at: The ISO 8601 timestamp for the last modification of
                 the comment, which may not have been an update of the body
 
-            * raw_body: The thread's raw body text without any rendering applied
+            * raw_body: The comment's raw body text without any rendering applied
 
             * abuse_flagged: Boolean indicating whether the requesting user has
               flagged the comment for abuse

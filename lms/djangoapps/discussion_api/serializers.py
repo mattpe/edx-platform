@@ -62,7 +62,7 @@ class _ContentSerializer(serializers.Serializer):
 
     def _is_anonymous(self, obj):
         """
-        Returns a boolean indicating whether the thread should be anonymous to
+        Returns a boolean indicating whether the content should be anonymous to
         the requester.
         """
         return (
@@ -71,7 +71,7 @@ class _ContentSerializer(serializers.Serializer):
         )
 
     def get_author(self, obj):
-        """Returns the author's username, or None if the thread is anonymous."""
+        """Returns the author's username, or None if the content is anonymous."""
         return None if self._is_anonymous(obj) else obj["username"]
 
     def _get_user_label(self, user_id):
@@ -86,25 +86,25 @@ class _ContentSerializer(serializers.Serializer):
         )
 
     def get_author_label(self, obj):
-        """Returns the role label for the thread author."""
+        """Returns the role label for the content author."""
         return None if self._is_anonymous(obj) else self._get_user_label(int(obj["user_id"]))
 
     def get_abuse_flagged(self, obj):
         """
         Returns a boolean indicating whether the requester has flagged the
-        thread as abusive.
+        content as abusive.
         """
         return self.context["cc_requester"]["id"] in obj["abuse_flaggers"]
 
     def get_voted(self, obj):
         """
         Returns a boolean indicating whether the requester has voted for the
-        thread.
+        content.
         """
         return obj["id"] in self.context["cc_requester"]["upvoted_ids"]
 
     def get_vote_count(self, obj):
-        """Returns the number of votes for the thread."""
+        """Returns the number of votes for the content."""
         return obj["votes"]["up_count"]
 
 
@@ -152,7 +152,7 @@ class CommentSerializer(_ContentSerializer):
 
     N.B. This should not be used with a comment_client Comment object that has
     not had retrieve() called, because of the interaction between DRF's attempts
-    at introspection and Thread's __getattr__.
+    at introspection and Comment's __getattr__.
     """
     thread_id = serializers.CharField()
     parent_id = serializers.SerializerMethodField("get_parent_id")

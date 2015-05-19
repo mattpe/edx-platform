@@ -135,19 +135,23 @@ def get_comment_list(request, thread_id, endorsed, page, page_size):
 
     Parameters:
 
-    request: The django request object used for build_absolute_uri and
-      determining the requesting user.
-    thread_id: The id of the thread to get comments for.
-    endorsed: Boolean indicating whether to get endorsed or non-endorsed
-      comments (or None for all comments). Must be None for a discussion thread
-      and non-None for a question thread.
-    page: The page number (1-indexed) to retrieve
-    page_size: The number of threads to retrieve per page
+        request: The django request object used for build_absolute_uri and
+          determining the requesting user.
+
+        thread_id: The id of the thread to get comments for.
+
+        endorsed: Boolean indicating whether to get endorsed or non-endorsed
+          comments (or None for all comments). Must be None for a discussion
+          thread and non-None for a question thread.
+
+        page: The page number (1-indexed) to retrieve
+
+        page_size: The number of comments to retrieve per page
 
     Returns:
 
-    A paginated result containing a list of comments; see
-    discussion_api.views.CommentViewSet for more detail.
+        A paginated result containing a list of comments; see
+        discussion_api.views.CommentViewSet for more detail.
     """
     response_skip = page_size * (page - 1)
     try:

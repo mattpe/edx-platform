@@ -576,7 +576,7 @@ class GetThreadListTest(CommentsServiceMockMixin, ModuleStoreTestCase):
 
 @ddt.ddt
 class GetCommentListTest(CommentsServiceMockMixin, ModuleStoreTestCase):
-    """Test for get_thread_list"""
+    """Test for get_comment_list"""
     def setUp(self):
         super(GetCommentListTest, self).setUp()
         httpretty.reset()
@@ -876,8 +876,8 @@ class GetCommentListTest(CommentsServiceMockMixin, ModuleStoreTestCase):
 
         def assert_page_correct(page, page_size, expected_start, expected_stop, expected_next, expected_prev):
             """
-            Check that the requesting the given page/page_size returns the
-            expected output
+            Check that requesting the given page/page_size returns the expected
+            output
             """
             actual = self.get_comment_list(thread, endorsed=True, page=page, page_size=page_size)
             result_ids = [result["id"] for result in actual["results"]]
