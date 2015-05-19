@@ -29,7 +29,7 @@ class BookmarksTestMixin(EventsTestMixin, UniqueCourseTest):
 
     def create_course_fixture(self):
         """ Create course fixture """
-        self.course_fixture = CourseFixture(
+        self.course_fixture = CourseFixture(  # pylint: disable=attribute-defined-outside-init
             self.course_info['org'], self.course_info['number'],
             self.course_info['run'], self.course_info['display_name']
         )
