@@ -1174,7 +1174,7 @@ dashboard_js = (
     ['js/search/dashboard/main.js']
 )
 discussion_js = sorted(rooted_glob(COMMON_ROOT / 'static', 'coffee/src/discussion/**/*.js'))
-rwd_header_footer_js = sorted(rooted_glob(PROJECT_ROOT / 'static', 'js/common_helpers/rwd_header_footer.js'))
+rwd_header_js = sorted(rooted_glob(PROJECT_ROOT / 'static', 'js/utils/rwd_header.js'))
 staff_grading_js = sorted(rooted_glob(PROJECT_ROOT / 'static', 'coffee/src/staff_grading/**/*.js'))
 open_ended_js = sorted(rooted_glob(PROJECT_ROOT / 'static', 'coffee/src/open_ended/**/*.js'))
 notes_js = sorted(rooted_glob(PROJECT_ROOT / 'static', 'coffee/src/notes/**/*.js'))
@@ -1187,7 +1187,7 @@ instructor_dash_js = (
 # These are not courseware, so they do not need many of the courseware-specific
 # JavaScript modules.
 student_account_js = [
-    'js/utils/rwd_header_footer.js',
+    'js/utils/rwd_header.js',
     'js/utils/edx.utils.validate.js',
     'js/form.ext.js',
     'js/my_courses_dropdown.js',
@@ -1419,9 +1419,9 @@ PIPELINE_JS = {
         'source_filenames': dashboard_js,
         'output_filename': 'js/dashboard.js'
     },
-    'rwd_header_footer': {
-        'source_filenames': rwd_header_footer_js,
-        'output_filename': 'js/rwd_header_footer.js'
+    'rwd_header': {
+        'source_filenames': rwd_header_js,
+        'output_filename': 'js/rwd_header.js'
     },
     'student_account': {
         'source_filenames': student_account_js,
