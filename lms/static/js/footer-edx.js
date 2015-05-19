@@ -5,7 +5,7 @@ var edx = edx || {};
 
     edx.footer = (function() {
         var _fn = {
-            el: '#footer-edx-v3',
+            el: '#edx-branding-footer',
 
             init: function() {
                 _fn.$el = _fn.$el || $( _fn.el );
@@ -14,7 +14,7 @@ var edx = edx || {};
                  *  Only continue if the expected element
                  *  to add footer to is in the DOM
                  */
-                if ( _fn.$el.length > -1 ) {
+                if ( _fn.$el.length > 0 ) {
                     _fn.footer.get();
                 }
             },
@@ -27,7 +27,7 @@ var edx = edx || {};
                      *  Only continue if the expected element
                      *  to add footer to is in the DOM
                      */
-                    if ( _fn.$el.length > -1 ) {
+                    if ( _fn.$el.length > 0 ) {
                         _fn.analytics.eventListener();
                     }
                 },
@@ -53,8 +53,9 @@ var edx = edx || {};
 
             footer: {
                 get: function() {
+                    var url = _fn.$el.data('base-url') || 'https://courses.edx.org';
                     $.ajax({
-                        url: 'https://courses.edx.org/api/v1/branding/footer.html',
+                        url: url + '/api/v1/branding/footer.html',
                         type: 'GET',
                         dataType: 'html',
                         success: function( data ) {
@@ -75,6 +76,6 @@ var edx = edx || {};
         };
     })();
 
-    // Initialize the analytics events
+    edx.footer.load();
     edx.footer.analytics();
 })(jQuery);

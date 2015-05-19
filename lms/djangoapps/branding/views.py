@@ -279,10 +279,10 @@ def footer(request, extension="json"):
             <body>
                 <h1>Footer API Test</h1>
                 <p>This is a test of the footer API.</p>
-                <footer id="edx-branding-footer"></footer>
+                <div id="edx-branding-footer"></div>
 
                 <!-- Load this at the bottom of the page so it doesn't block the DOM from loading -->
-                <script type="text/css" src="http://example.com/api/v1/branding/footer.css"></script>
+                <link type="text/css" rel="stylesheet" href="http://example.com/api/v1/branding/footer.css"></link>
                 <script type="text/javascript" src="http://example.com/api/v1/branding/footer.js"></script>
             </body>
         </html>

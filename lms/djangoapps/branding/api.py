@@ -24,6 +24,18 @@ from edxmako.shortcuts import marketing_link
 log = logging.getLogger("edx.footer")
 
 
+def get_base_url(is_secure=True):
+    """Retrieve the base URL for the API, including the protocol and domain.
+
+    Keyword Arguments:
+        is_secure (bool): If True, use https:// in URLs.
+
+    Returns: unicode
+
+    """
+    return _absolute_url(is_secure, "")
+
+
 def get_footer(is_secure=True):
     """Retrieve information used to render the footer.
 
@@ -84,31 +96,25 @@ def get_footer(is_secure=True):
     }
 
     """
-    is_edx_domain = settings.FEATURES.get('IS_EDX_DOMAIN', False)
-    site_name = microsite.get_value('SITE_NAME', settings.SITE_NAME)
-
     return {
-        "copyright": _footer_copyright(is_edx_domain),
-        "logo_image": _footer_logo_img(is_secure, site_name, is_edx_domain),
+        "copyright": _footer_copyright(),
+        "logo_image": _footer_logo_img(is_secure),
         "social_links": _footer_social_links(),
-        "navigation_links": _footer_navigation_links(is_edx_domain),
-        "mobile_links": _footer_mobile_links(is_secure, site_name),
+        "navigation_links": _footer_navigation_links(),
+        "mobile_links": _footer_mobile_links(is_secure),
         "legal_links": _footer_legal_links(),
-        "openedx_link": _footer_openedx_link(is_secure, site_name),
+        "openedx_link": _footer_openedx_link(is_secure),
     }
 
 
-def _footer_copyright(is_edx_domain):
+def _footer_copyright():
     """Return the copyright to display in the footer.
-
-    Arguments:
-        is_edx_domain (bool): If true, this is an EdX-controlled domain.
 
     Returns: unicode
 
     """
     org_name = (
-        "edX Inc" if is_edx_domain
+        "edX Inc" if settings.FEATURES.get('IS_EDX_DOMAIN', False)
         else microsite.get_value('PLATFORM_NAME', settings.PLATFORM_NAME)
     )
 
@@ -121,12 +127,11 @@ def _footer_copyright(is_edx_domain):
     ).format(org_name=org_name)
 
 
-def _footer_openedx_link(is_secure, site_name):
+def _footer_openedx_link(is_secure):
     """Return the image link for "powered by OpenEdX".
 
     Args:
         is_secure (bool): Whether the request is using TLS.
-        site_name (str): The site url to get the absolute link
 
     Returns: dict
 
@@ -134,7 +139,7 @@ def _footer_openedx_link(is_secure, site_name):
     return {
         "url": "http://open.edx.org",
         "title": _("Powered by Open edX"),
-        "image": _absolute_url(is_secure, site_name, "images/openedx-logo-tag.png")
+        "image": _absolute_url_staticfile(is_secure, "images/openedx-logo-tag.png")
     }
 
 
@@ -157,7 +162,7 @@ def _footer_social_links():
     return links
 
 
-def _footer_navigation_links(is_edx_domain):
+def _footer_navigation_links():
     """Return the navigation links to display in the footer. """
     return [
         {
@@ -179,10 +184,7 @@ def _footer_navigation_links(is_edx_domain):
 
 
 def _footer_legal_links():
-    """Return the legal footer links (e.g. terms of service).
-
-    Returns: list
-    """
+    """Return the legal footer links (e.g. terms of service). """
     return [
         {
             "name": "terms_of_service",
@@ -198,12 +200,11 @@ def _footer_legal_links():
     ]
 
 
-def _footer_mobile_links(is_secure, site_name):
+def _footer_mobile_links(is_secure):
     """Return the mobile app store links.
 
     Args:
         is_secure (bool): Whether the request is using TLS.
-        site_name (str): The site url to get the absolute link
 
     Returns: list
 
@@ -215,54 +216,66 @@ def _footer_mobile_links(is_secure, site_name):
                 "name": "apple",
                 "title": "Apple",
                 "url": settings.MOBILE_STORE_URLS.get('apple', '#'),
-                "image": _absolute_url(is_secure, site_name, 'images/app/app_store_badge_135x40.svg')
+                "image": _absolute_url_staticfile(is_secure, 'images/app/app_store_badge_135x40.svg')
             },
             {
                 "name": "google",
                 "title": "Google",
                 "url": settings.MOBILE_STORE_URLS.get('google', '#'),
-                "image": _absolute_url(is_secure, site_name, 'images/app/google_play_badge_45.png')
+                "image": _absolute_url_staticfile(is_secure, 'images/app/google_play_badge_45.png')
             }
         ]
     return mobile_links
 
 
-def _footer_logo_img(is_secure, site_name, is_edx_domain):
+def _footer_logo_img(is_secure):
     """Return the logo used for footer about link
 
     Args:
         is_secure (bool): Whether the request is using TLS.
-        site_name(str): The site url to get the absolute link
-        is_edx_domain (bool): If true, this is an EdX-controlled domain.
 
     Returns:
         Absolute url to logo
     """
     logo_name = (
         u"images/edx-theme/edx-header-logo.png"
-        if is_edx_domain
+        if settings.FEATURES.get('IS_EDX_DOMAIN', False)
         else u"images/default-theme/logo.png"
     )
 
-    return _absolute_url(is_secure, site_name, logo_name)
+    return _absolute_url_staticfile(is_secure, logo_name)
 
 
-def _absolute_url(is_secure, site_name, name):
+def _absolute_url(is_secure, url_path):
     """Construct an absolute URL back to the site.
 
     Arguments:
         is_secure (bool): If true, use HTTPS as the protocol.
-        site_name (unicode): The site name of this server.
-        path (unicode): The URL path.
+        url_path (unicode): The path of the URL.
+
+    Returns:
+        unicode
+
+    """
+    protocol = "https://" if is_secure else "http://"
+    site_name = microsite.get_value('SITE_NAME', settings.SITE_NAME)
+    return u"{protocol}{site_name}{url_path}".format(
+        protocol=protocol,
+        site_name=site_name,
+        url_path=url_path,
+    )
+
+
+def _absolute_url_staticfile(is_secure, name):
+    """Construct an absolute URL back to a static resource on the site.
+
+    Arguments:
+        is_secure (bool): If true, use HTTPS as the protocol.
+        name (unicode): The name of the static resource to retrieve.
 
     Returns:
         unicode
 
     """
     url_path = staticfiles_storage.url(name)
-    protocol = "https://" if is_secure else "http://"
-    return u"{protocol}{site_name}{url_path}".format(
-        protocol=protocol,
-        site_name=site_name,
-        url_path=url_path
-    )
+    return _absolute_url(is_secure, url_path)
