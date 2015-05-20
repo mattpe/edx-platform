@@ -56,7 +56,6 @@
             'capa/display': 'xmodule_js/src/capa/display',
             'string_utils': 'xmodule_js/common_static/js/src/string_utils',
             'logger': 'xmodule_js/common_static/js/src/logger',
-            "moment": "js/vendor/moment-with-locales.min",
 
             // Manually specify LMS files that are not converted to RequireJS
             'history': 'js/vendor/history',
