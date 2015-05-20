@@ -27,12 +27,12 @@
 
 
             toggleBookmarksListView: function () {
-                if (this.bookmarksListView.isVisible()) {
+                if (this.bookmarksListView.areBookmarksVisible()) {
                     this.bookmarksListView.hideBookmarks();
                     this.$('.bookmarks-list-button').attr('aria-pressed', 'false');
                     this.$('.bookmarks-list-button').removeClass('is-active').addClass('is-inactive');
                 } else {
-                    this.bookmarksListView.showBookmarksList();
+                    this.bookmarksListView.showBookmarks();
                     this.$('.bookmarks-list-button').attr('aria-pressed', 'true');
                     this.$('.bookmarks-list-button').removeClass('is-inactive').addClass('is-active');
                 }

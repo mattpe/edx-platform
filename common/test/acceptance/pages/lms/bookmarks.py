@@ -26,7 +26,7 @@ class BookmarksPage(CoursePage):
     def click_bookmarks_button(self):
         """ Click on Bookmarks button """
         self.q(css=self.BOOKMARKS_BUTTON_SELECTOR).first.click()
-        EmptyPromise(self.results_present, "Bookmarks Results Present").fulfill()
+        EmptyPromise(self.results_present, "Bookmarks results present").fulfill()
 
     def results_present(self):
         """ Check if bookmarks results are present """

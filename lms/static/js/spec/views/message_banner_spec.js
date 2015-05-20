@@ -5,8 +5,10 @@ define(['backbone', 'jquery', 'underscore', 'js/views/message', 'js/common_helpe
 
         describe("MessageView", function () {
 
+            var messageEl = '.message-banner';
+
             beforeEach(function () {
-                setFixtures('<div class="message-banner"></div><div class="message"></div>');
+                setFixtures('<div class="message-banner"></div>');
                 TemplateHelpers.installTemplate("templates/fields/message_banner");
                 TemplateHelpers.installTemplate("templates/message_view");
             });
@@ -18,29 +20,27 @@ define(['backbone', 'jquery', 'underscore', 'js/views/message', 'js/common_helpe
                 });
             };
 
-            it('renders message correctly with template with no icon', function() {
-                var messageSelector = '.message-banner';
+            it('renders correctly with the /fields/message_banner template', function() {
                 var messageView = createMessageView(messageSelector, '#message_banner-tpl');
 
                 messageView.showMessage('I am message view');
-                expect($(messageSelector).text().trim()).toBe('I am message view');
+                expect($(messageEl).text().trim()).toBe('I am message view');
 
                 messageView.hideMessage();
-                expect($(messageSelector).text().trim()).toBe('');
+                expect($(messageEl).text().trim()).toBe('');
             });
 
-            it('renders message correctly with template and icon', function() {
-                var messageSelector = '.message';
-                var messageView = createMessageView(messageSelector, '#message-tpl');
+            it('renders correctly with the /message_view template', function() {
+                var messageView = createMessageView(messageEl, '#message-tpl');
                 var icon = '<i class="fa fa-thumbs-up"></i>';
 
                 messageView.showMessage('I am message view', icon);
 
-                expect($(messageSelector).text().trim()).toBe('I am message view');
-                expect($(messageSelector).html()).toContain(icon);
+                expect($(messageEl).text().trim()).toBe('I am message view');
+                expect($(messageEl).html()).toContain(icon);
 
                 messageView.hideMessage();
-                expect($(messageSelector).text().trim()).toBe('');
+                expect($(messageEl).text().trim()).toBe('');
             });
         });
     });

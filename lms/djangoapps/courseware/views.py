@@ -403,9 +403,9 @@ def _index_bulk_op(request, course_key, chapter, section, position):
 
     masquerade = setup_masquerade(request, course_key, staff_access)
 
-    lang_code = get_user_preference(request.user, LANGUAGE_KEY)
-    if not lang_code:
-        lang_code = settings.LANGUAGE_CODE
+    language_preference = get_user_preference(request.user, LANGUAGE_KEY)
+    if not language_preference:
+        language_preference = settings.LANGUAGE_CODE
 
     try:
         field_data_cache = FieldDataCache.cache_for_descriptor_descendents(
@@ -431,7 +431,7 @@ def _index_bulk_op(request, course_key, chapter, section, position):
             'masquerade': masquerade,
             'xqa_server': settings.FEATURES.get('USE_XQA_SERVER', 'http://xqa:server@content-qa.mitx.mit.edu/xqa'),
             'reverifications': fetch_reverify_banner_info(request, course_key),
-            'lang_code': lang_code
+            'language_preference': language_preference
         }
 
         now = datetime.now(UTC())

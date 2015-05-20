@@ -22,7 +22,7 @@ class BookmarksTestMixin(EventsTestMixin, UniqueCourseTest):
     """
     USERNAME = "STUDENT"
     EMAIL = "student@example.com"
-    PROBLEMS_INFO = [
+    COURSE_TREE_INFO = [
         ['TestSection1', 'TestSubsection1', 'TestProblem1'],
         ['TestSection2', 'TestSubsection2', 'TestProblem2']
     ]
@@ -35,14 +35,14 @@ class BookmarksTestMixin(EventsTestMixin, UniqueCourseTest):
         )
 
         self.course_fixture.add_children(
-            XBlockFixtureDesc('chapter', self.PROBLEMS_INFO[0][0]).add_children(
-                XBlockFixtureDesc('sequential', self.PROBLEMS_INFO[0][1]).add_children(
-                    XBlockFixtureDesc('problem', self.PROBLEMS_INFO[0][2])
+            XBlockFixtureDesc('chapter', self.COURSE_TREE_INFO[0][0]).add_children(
+                XBlockFixtureDesc('sequential', self.COURSE_TREE_INFO[0][1]).add_children(
+                    XBlockFixtureDesc('problem', self.COURSE_TREE_INFO[0][2])
                 )
             ),
-            XBlockFixtureDesc('chapter', self.PROBLEMS_INFO[1][0]).add_children(
-                XBlockFixtureDesc('sequential', self.PROBLEMS_INFO[1][1]).add_children(
-                    XBlockFixtureDesc('problem', self.PROBLEMS_INFO[1][2])
+            XBlockFixtureDesc('chapter', self.COURSE_TREE_INFO[1][0]).add_children(
+                XBlockFixtureDesc('sequential', self.COURSE_TREE_INFO[1][1]).add_children(
+                    XBlockFixtureDesc('problem', self.COURSE_TREE_INFO[1][2])
                 )
             )
         ).install()
@@ -91,12 +91,12 @@ class BookmarksTest(BookmarksTestMixin):
         response = json.loads(response.text)
         self.assertTrue(response['usage_id'] == usage_id, "Failed to bookmark unit")
 
-    def _bookmark_all_units(self, xblocks):
+    def _bookmarks_blocks(self, xblocks):
         """ Bookmark all units in a course """
         for xblock in xblocks:
             self._bookmark_unit(self.course_id, usage_id=xblock.locator)
 
-    def _delete_section(self, index=0):
+    def _delete_section(self, index):
         """ Delete a section at index `index` """
 
         # Logout and login as staff
@@ -154,7 +154,7 @@ class BookmarksTest(BookmarksTestMixin):
         Then I can navigate to correct bookmarked unit
         """
         xblocks = self.course_fixture.get_nested_xblocks(category="problem")
-        self._bookmark_all_units(xblocks)
+        self._bookmarks_blocks(xblocks)
 
         self.bookmarks.click_bookmarks_button()
         self.assertTrue(self.bookmarks.results_present())
@@ -164,7 +164,7 @@ class BookmarksTest(BookmarksTestMixin):
         bookmarked_breadcrumbs = self.bookmarks.breadcrumbs()
 
         # Verify bookmarked breadcrumbs and link navigation
-        for index, problem_info in enumerate(self.PROBLEMS_INFO):
+        for index, problem_info in enumerate(self.COURSE_TREE_INFO):
             self.assertEqual(bookmarked_breadcrumbs[index], problem_info)
             self.bookmarks.click_bookmark(index)
             self.courseware_page.wait_for_page()
@@ -185,12 +185,13 @@ class BookmarksTest(BookmarksTestMixin):
         When I click on deleted bookmark
         Then I should navigated to 404 page
         """
-        self._bookmark_all_units(self.course_fixture.get_nested_xblocks(category="problem"))
+        self._bookmarks_blocks(self.course_fixture.get_nested_xblocks(category="problem"))
 
-        self._delete_section()
+        self._delete_section(0)
 
         self.bookmarks.click_bookmarks_button()
         self.assertTrue(self.bookmarks.results_present())
+        self.assertEqual(self.bookmarks.count(), 2)
 
         self.bookmarks.click_bookmark(0)
         self.assertTrue(is_404_page(self.browser))

@@ -6,6 +6,7 @@
 
         return Backbone.Collection.extend({
             model : BookmarkModel,
+            url: '/api/bookmarks/v0/bookmarks/',
 
             parse: function(response) {
                 return response.results;
