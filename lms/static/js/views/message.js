@@ -15,18 +15,17 @@
                 if (_.isUndefined(this.message) || _.isNull(this.message)) {
                     this.$el.html('');
                 } else {
-                    var data = {
-                        message: this.message
-                    };
-                    _.extend(data, this.icon);
-                    this.$el.html(this.template(data));
+                    this.$el.html(this.template({
+                        message: this.message,
+                        icon: this.icon
+                    }));
                 }
                 return this;
             },
 
             showMessage: function (message, icon) {
                 this.message = message;
-                this.icon = _.isUndefined(icon) ? {} : {icon: icon};
+                this.icon = icon;
                 this.render();
             },
 
