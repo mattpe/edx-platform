@@ -35,9 +35,11 @@ class TestFooter(TestCase):
     FAKE_STATIC_FILES = [
         (settings.STATIC_ROOT / name).abspath()
         for name in [
-            path("js") / settings.FOOTER_JS_STATIC_NAME,
-            path("css") / settings.FOOTER_LTR_CSS_STATIC_NAME,
-            path("css") / settings.FOOTER_RTL_CSS_STATIC_NAME,
+            path("js") / settings.FOOTER_JS,
+            path("css") / settings.FOOTER_CSS['openedx']['ltr'],
+            path("css") / settings.FOOTER_CSS['openedx']['rtl'],
+            path("css") / settings.FOOTER_CSS['edx']['ltr'],
+            path("css") / settings.FOOTER_CSS['edx']['rtl'],
         ]
     ]
 
@@ -78,14 +80,14 @@ class TestFooter(TestCase):
     @ddt.data(
         # Open source version
         (False, "", "application/json; charset=utf-8", "Open edX"),
-        (False, "css", "text/css", settings.FOOTER_LTR_CSS_STATIC_NAME),
-        (False, "js", "text/javascript", settings.FOOTER_JS_STATIC_NAME),
+        (False, "css", "text/css", settings.FOOTER_CSS['openedx']['ltr']),
+        (False, "js", "text/javascript", settings.FOOTER_JS),
         (False, "html", "text/html; charset=utf-8", "Open edX"),
 
         # EdX.org version
         (True, "", "application/json; charset=utf-8", "edX Inc"),
-        (True, "css", "text/css", settings.FOOTER_LTR_CSS_STATIC_NAME),
-        (True, "js", "text/javascript", settings.FOOTER_JS_STATIC_NAME),
+        (True, "css", "text/css", settings.FOOTER_CSS['edx']['ltr']),
+        (True, "js", "text/javascript", settings.FOOTER_JS),
         (True, "html", "text/html; charset=utf-8", "edX Inc"),
     )
     @ddt.unpack
@@ -186,13 +188,21 @@ class TestFooter(TestCase):
         self.assertIn(expected_copyright, json_data['copyright'])
 
     @ddt.data(
-        ("en", settings.FOOTER_LTR_CSS_STATIC_NAME),
-        ("ar", settings.FOOTER_RTL_CSS_STATIC_NAME),
+        # OpenEdX
+        (False, "en", settings.FOOTER_CSS['openedx']['ltr']),
+        (False, "ar", settings.FOOTER_CSS['openedx']['rtl']),
+
+        # EdX.org
+        (True, "en", settings.FOOTER_CSS['edx']['ltr']),
+        (True, "ar", settings.FOOTER_CSS['edx']['rtl']),
     )
     @ddt.unpack
-    def test_language_rtl(self, language, static_path):
+    def test_language_rtl(self, is_edx_domain, language, static_path):
         self._set_feature_flag(True)
-        resp = self._get_footer(extension="css", language=language)
+
+        with self._set_is_edx_domain(is_edx_domain):
+            resp = self._get_footer(extension="css", language=language)
+
         self.assertEqual(resp.status_code, 200)
 
         # Check that the static path is in the content of the response.

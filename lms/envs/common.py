@@ -1255,9 +1255,17 @@ ccx_js = sorted(rooted_glob(PROJECT_ROOT / 'static', 'js/ccx/**/*.js'))
 # These are referred to both by the Django asset pipeline
 # AND by the branding footer API, which uses an internal
 # redirect to serve these files.
-FOOTER_JS_STATIC_NAME = "footer-edx.js"
-FOOTER_LTR_CSS_STATIC_NAME = "footer/lms-footer-edx.css"
-FOOTER_RTL_CSS_STATIC_NAME = "footer/lms-footer-edx-rtl.css"
+FOOTER_JS = "footer-edx.js"
+FOOTER_CSS = {
+    "openedx": {
+        "ltr": "footer/lms-footer.css",
+        "rtl": "footer/lms-footer-rtl.css",
+    },
+    "edx": {
+        "ltr": "footer/lms-footer-edx.css",
+        "rtl": "footer/lms-footer-edx-rtl.css",
+    },
+}
 
 PIPELINE_CSS = {
     'style-vendor': {
@@ -1338,17 +1346,29 @@ PIPELINE_CSS = {
         ],
         'output_filename': 'css/lms-style-xmodule-annotations.css',
     },
+    'style-footer': {
+        'source_filenames': [
+            'sass/footer/lms-footer.css',
+        ],
+        'output_filename': path("css") / FOOTER_CSS['openedx']['ltr'],
+    },
+    'style-footer-rtl': {
+        'source_filenames': [
+            'sass/footer/lms-footer-rtl.css',
+        ],
+        'output_filename': path("css") / FOOTER_CSS['openedx']['rtl'],
+    },
     'style-edx-footer': {
         'source_filenames': [
             'sass/footer/lms-footer-edx.css',
         ],
-        'output_filename': path("css") / FOOTER_LTR_CSS_STATIC_NAME,
+        'output_filename': path("css") / FOOTER_CSS['edx']['ltr'],
     },
     'style-edx-footer-rtl': {
         'source_filenames': [
             'sass/footer/lms-footer-edx-rtl.css',
         ],
-        'output_filename': path("css") / FOOTER_RTL_CSS_STATIC_NAME,
+        'output_filename': path("css") / FOOTER_CSS['edx']['rtl'],
     },
 }
 
@@ -1445,7 +1465,7 @@ PIPELINE_JS = {
     },
     'footer_edx': {
         'source_filenames': ['js/footer-edx.js'],  # include footer-analytics and footer-load
-        'output_filename': path("js") / FOOTER_JS_STATIC_NAME,
+        'output_filename': path("js") / FOOTER_JS,
     }
 }
 

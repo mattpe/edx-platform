@@ -1,4 +1,4 @@
-// Footer for edx.org (right-to-left)
+// Footer for edx.org (left-to-right)
 // ==================================
 
 // libs and resets *do not edit*

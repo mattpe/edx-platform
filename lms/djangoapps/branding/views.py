@@ -142,10 +142,9 @@ def _footer_css_name():
     Returns: unicode
 
     """
-    css_name = (
-        settings.FOOTER_RTL_CSS_STATIC_NAME if translation.get_language_bidi()
-        else settings.FOOTER_LTR_CSS_STATIC_NAME
-    )
+    bidi = 'rtl' if translation.get_language_bidi() else 'ltr'
+    version = 'edx' if settings.FEATURES.get('IS_EDX_DOMAIN') else 'openedx'
+    css_name = settings.FOOTER_CSS[version][bidi]
 
     # In production, the asset pipeline copies compiled sass
     # to a css folder.  Unfortunately, this doesn't happen
@@ -316,6 +315,6 @@ def footer(request, extension="json"):
     elif extension == "css":
         return _send_footer_static(request, _footer_css_name())
     elif extension == "js":
-        return _send_footer_static(request, path("js") / settings.FOOTER_JS_STATIC_NAME)
+        return _send_footer_static(request, path("js") / settings.FOOTER_JS)
     else:
         raise Http404
