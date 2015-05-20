@@ -45,7 +45,7 @@ class TestFooter(TestCase):
     def setUpClass(cls):
         """Create the fake static files. """
         # Ensure that the static files directory exists
-        for folder_path in ["js", "css"]:
+        for folder_path in ["js", "css/footer"]:
             full_path = (settings.STATIC_ROOT / folder_path).abspath()
             if not os.path.exists(full_path):
                 os.makedirs(full_path)

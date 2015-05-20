@@ -1256,8 +1256,8 @@ ccx_js = sorted(rooted_glob(PROJECT_ROOT / 'static', 'js/ccx/**/*.js'))
 # AND by the branding footer API, which uses an internal
 # redirect to serve these files.
 FOOTER_JS_STATIC_NAME = "footer-edx.js"
-FOOTER_LTR_CSS_STATIC_NAME = "lms-footer-edx.css"
-FOOTER_RTL_CSS_STATIC_NAME = "lms-footer-edx-rtl.css"
+FOOTER_LTR_CSS_STATIC_NAME = "footer/lms-footer-edx.css"
+FOOTER_RTL_CSS_STATIC_NAME = "footer/lms-footer-edx-rtl.css"
 
 PIPELINE_CSS = {
     'style-vendor': {
@@ -1340,13 +1340,13 @@ PIPELINE_CSS = {
     },
     'style-edx-footer': {
         'source_filenames': [
-            'sass/lms-footer-edx.css',
+            'sass/footer/lms-footer-edx.css',
         ],
         'output_filename': path("css") / FOOTER_LTR_CSS_STATIC_NAME,
     },
     'style-edx-footer-rtl': {
         'source_filenames': [
-            'sass/lms-footer-edx-rtl.css',
+            'sass/footer/lms-footer-edx-rtl.css',
         ],
         'output_filename': path("css") / FOOTER_RTL_CSS_STATIC_NAME,
     },
