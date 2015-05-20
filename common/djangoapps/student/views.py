@@ -341,7 +341,7 @@ def _cert_info(user, course, cert_status, course_mode):
                 'show_cert_web_view': True,
                 'cert_web_view_url': u'{url}?course={course_id}'.format(
                     url=reverse('cert_html_view'),
-                    course=unicode(course.id)
+                    course_id=unicode(course.id)
                 )})
         elif 'download_url' not in cert_status:
             log.warning(

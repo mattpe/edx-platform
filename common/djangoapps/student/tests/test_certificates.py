@@ -45,7 +45,7 @@ class CertificateDisplayTest(ModuleStoreTestCase):
 
         test_url = u'{url}?course={course_id}'.format(
             url=reverse('cert_html_view'),
-            course=unicode(self.course.id))
+            course_id=unicode(self.course.id))
 
         self._create_certificate(enrollment_mode)
         certificates = [
