@@ -43,9 +43,9 @@ class CertificateDisplayTest(ModuleStoreTestCase):
     @patch.dict('django.conf.settings.FEATURES', {'CERTIFICATES_HTML_VIEW': True})
     def test_linked_student_to_web_view_credential(self, enrollment_mode):
 
-        test_url = u'{url}?course_id={course_id}'.format(
+        test_url = u'{url}?course={course_id}'.format(
             url=reverse('cert_html_view'),
-            course_id=unicode(self.course.id))
+            course=unicode(self.course.id))
 
         self._create_certificate(enrollment_mode)
         certificates = [

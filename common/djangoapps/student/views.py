@@ -339,9 +339,9 @@ def _cert_info(user, course, cert_status, course_mode):
         if course.certificates and settings.FEATURES.get('CERTIFICATES_HTML_VIEW', False):
             status_dict.update({
                 'show_cert_web_view': True,
-                'cert_web_view_url': u'{url}?course_id={course_id}'.format(
+                'cert_web_view_url': u'{url}?course={course_id}'.format(
                     url=reverse('cert_html_view'),
-                    course_id=unicode(course.id)
+                    course=unicode(course.id)
                 )})
         elif 'download_url' not in cert_status:
             log.warning(
