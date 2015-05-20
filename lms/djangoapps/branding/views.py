@@ -119,14 +119,8 @@ def courses(request):
 
 def _render_footer_html():
     """Render the footer as HTML. """
-    # TODO: remove the v2 version of the footer once we make the v3 version permanent.
-    # Note that the V2 version of the footer does NOT retrieve content from the branding
-    # API, since we're going to delete it soon anyway.
     return (
-        render_to_response(
-            "footer-edx-v3.html" if settings.FEATURES.get("ENABLE_FOOTER_V3", False)
-            else "footer-edx-v2.html"
-        )
+        render_to_response("footer-edx-v3.html")
         if settings.FEATURES.get("IS_EDX_DOMAIN", False)
         else render_to_response("footer.html")
     )

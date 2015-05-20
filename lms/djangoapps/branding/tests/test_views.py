@@ -14,8 +14,6 @@ from config_models.models import cache
 from branding.models import BrandingApiConfig
 
 
-# TODO: remove this settings patch once the V3 footer is enabled permanently
-@mock.patch.dict(settings.FEATURES, {'ENABLE_FOOTER_V3': True})
 @ddt.ddt
 class TestFooter(TestCase):
     """Test API end-point for retrieving the footer. """
@@ -47,7 +45,7 @@ class TestFooter(TestCase):
     def setUpClass(cls):
         """Create the fake static files. """
         # Ensure that the static files directory exists
-        for folder_path in ["js", "css/footer"]:
+        for folder_path in ["js", "css"]:
             full_path = (settings.STATIC_ROOT / folder_path).abspath()
             if not os.path.exists(full_path):
                 os.makedirs(full_path)
@@ -105,17 +103,6 @@ class TestFooter(TestCase):
         # we check for the path that we wrote to the file when creating
         # the test fixtures.
         self.assertIn(content, resp.content)
-
-    # TODO: Remove this test case once the V2 version of the footer is removed
-    @mock.patch.dict(settings.FEATURES, {
-        'ENABLE_FOOTER_V3': False,
-        'IS_EDX_DOMAIN': True
-    })
-    def test_footer_v2(self):
-        self._set_feature_flag(True)
-        resp = self._get_footer(extension="html")
-        self.assertEqual(resp.status_code, 200)
-        self.assertIn("edX Inc", resp.content)
 
     @mock.patch.dict(settings.FEATURES, {'ENABLE_FOOTER_MOBILE_APP_LINKS': True})
     @ddt.data(True, False)

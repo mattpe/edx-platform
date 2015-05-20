@@ -83,8 +83,7 @@ def open_source_footer_context_processor(request):
     """
     return dict(
         [
-            ("IS_EDX_DOMAIN", settings.FEATURES.get('IS_EDX_DOMAIN', False)),
-            ("ENABLE_FOOTER_V3", settings.FEATURES.get('ENABLE_FOOTER_V3', False)),
+            ("IS_EDX_DOMAIN", settings.FEATURES.get('IS_EDX_DOMAIN', False))
         ]
     )
 

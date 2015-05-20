@@ -341,9 +341,6 @@ FEATURES = {
     # Show the mobile app links in the footer
     'ENABLE_FOOTER_MOBILE_APP_LINKS': False,
 
-    # Use version 3 of the footer (added May 2015)
-    'ENABLE_FOOTER_V3': False,
-
     # Let students save and manage their annotations
     'ENABLE_EDXNOTES': False,
 
@@ -1258,12 +1255,12 @@ ccx_js = sorted(rooted_glob(PROJECT_ROOT / 'static', 'js/ccx/**/*.js'))
 FOOTER_JS = "footer.js"
 FOOTER_CSS = {
     "openedx": {
-        "ltr": "footer/lms-footer.css",
-        "rtl": "footer/lms-footer-rtl.css",
+        "ltr": "lms-footer.css",
+        "rtl": "lms-footer-rtl.css",
     },
     "edx": {
-        "ltr": "footer/lms-footer-edx.css",
-        "rtl": "footer/lms-footer-edx-rtl.css",
+        "ltr": "lms-footer-edx.css",
+        "rtl": "lms-footer-edx-rtl.css",
     },
 }
 
@@ -1348,25 +1345,25 @@ PIPELINE_CSS = {
     },
     'style-footer': {
         'source_filenames': [
-            'sass/footer/lms-footer.css',
+            'sass/lms-footer.css',
         ],
         'output_filename': path("css") / FOOTER_CSS['openedx']['ltr'],
     },
     'style-footer-rtl': {
         'source_filenames': [
-            'sass/footer/lms-footer-rtl.css',
+            'sass/lms-footer-rtl.css',
         ],
         'output_filename': path("css") / FOOTER_CSS['openedx']['rtl'],
     },
     'style-edx-footer': {
         'source_filenames': [
-            'sass/footer/lms-footer-edx.css',
+            'sass/lms-footer-edx.css',
         ],
         'output_filename': path("css") / FOOTER_CSS['edx']['ltr'],
     },
     'style-edx-footer-rtl': {
         'source_filenames': [
-            'sass/footer/lms-footer-edx-rtl.css',
+            'sass/lms-footer-edx-rtl.css',
         ],
         'output_filename': path("css") / FOOTER_CSS['edx']['rtl'],
     },
@@ -1819,25 +1816,13 @@ MKTG_URL_LINK_MAP = {
 ################# Social Media Footer Links #######################
 # The names list controls the order of social media
 # links in the footer.
-if FEATURES.get('ENABLE_FOOTER_V3'):
-    SOCIAL_MEDIA_FOOTER_NAMES = [
-        "facebook",
-        "twitter",
-        "linkedin",
-        "weibo",
-        "vk",
-    ]
-else:
-    SOCIAL_MEDIA_FOOTER_NAMES = [
-        "facebook",
-        "twitter",
-        "linkedin",
-        "google_plus",
-        "tumblr",
-        "meetup",
-        "reddit",
-        "youtube",
-    ]
+SOCIAL_MEDIA_FOOTER_NAMES = [
+    "facebook",
+    "twitter",
+    "linkedin",
+    "weibo",
+    "vk",
+]
 
 # The footer URLs dictionary maps social footer names
 # to URLs defined in configuration.
