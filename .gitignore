@@ -105,3 +105,4 @@ dist
 
 ### Eclipse IDE
 .project
+.pydevproject
