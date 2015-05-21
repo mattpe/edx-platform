@@ -43,15 +43,17 @@
 
       <div class="wrapper-logo">
         <p>
-          <a href="/">
+          <a href="http://www.metropolia.fi">
             ## this is just a placeholder logo
             ## feel free to change this logo to your own by replacing "logo.png" with your own logo
-            <img alt="organization logo placeholder" src="/static/images/default-theme/logo.png">
+            <img alt="Metropolia logo" src="/static/images/default-theme/logo.png">
           </a>
         </p>
       </div>
 
       <p class="copyright">&copy; ${settings.COPYRIGHT_YEAR} ${settings.PLATFORM_NAME}.</p>
+
+      <p class="copyright">Knork is funded through the KA3 Programme of the European Commission. The content of this publication is the sole responsibility of the publisher. The European Commission is not liable for any use that may be made of the information.</p>
 
       ## Site operators: Please do not remove this paragraph! This attributes back to edX and makes your acknowledgement of edX's trademarks clear.
       <p class="copyright">
@@ -63,26 +65,9 @@
       </p>
       <nav class="nav-legal" aria-label="${_('Legal')}">
         <ul>
-        % if marketing_link('HONOR') and marketing_link('HONOR') != '#':
-          <li class="nav-legal-01">
-            <%
-              tos_link = u"<a href='{}'>".format(marketing_link('TOS'))
-              honor_link = u"<a href='{}'>".format(marketing_link('HONOR'))
-            %>
-            ${
-              _("{tos_link_start}Terms of Service{tos_link_end} and {honor_link_start}Honor Code{honor_link_end}").format(
-                tos_link_start=tos_link,
-                tos_link_end="</a>",
-                honor_link_start=honor_link,
-                honor_link_end="</a>",
-              )
-            }
-          </li>
-        % else:
           <li class="nav-legal-01">
             <a href="${marketing_link('TOS')}">${_("Terms of Service")}</a>
           </li>
-        % endif
           <li class="nav-legal-02">
             <a href="${marketing_link('PRIVACY')}">${_("Privacy Policy")}</a>
           </li>
