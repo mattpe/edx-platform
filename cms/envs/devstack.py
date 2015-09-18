@@ -11,6 +11,7 @@ MEDIA_ROOT = "/edx/var/edxapp/uploads"
 DEBUG = True
 USE_I18N = True
 TEMPLATE_DEBUG = DEBUG
+HTTPS = 'off'
 
 ################################ LOGGERS ######################################
 
@@ -29,6 +30,17 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 LMS_BASE = "localhost:8000"
 FEATURES['PREVIEW_LMS_BASE'] = "preview." + LMS_BASE
+
+########################### PIPELINE #################################
+
+# Skip packaging and optimization in development
+STATICFILES_STORAGE = 'pipeline.storage.NonPackagingPipelineStorage'
+
+# Revert to the default set of finders as we don't want the production pipeline
+STATICFILES_FINDERS = [
+    'staticfiles.finders.FileSystemFinder',
+    'staticfiles.finders.AppDirectoriesFinder',
+]
 
 ############################# ADVANCED COMPONENTS #############################
 
@@ -78,10 +90,27 @@ FEATURES['MILESTONES_APP'] = True
 ################################ ENTRANCE EXAMS ################################
 FEATURES['ENTRANCE_EXAMS'] = True
 
+################################ COURSE LICENSES ################################
+FEATURES['LICENSING'] = True
+# Needed to enable licensing on video modules
+XBLOCK_SETTINGS = {
+    "VideoDescriptor": {
+        "licensing_enabled": True
+    }
+}
+
 ################################ SEARCH INDEX ################################
 FEATURES['ENABLE_COURSEWARE_INDEX'] = True
 FEATURES['ENABLE_LIBRARY_INDEX'] = True
 SEARCH_ENGINE = "search.elastic.ElasticSearchEngine"
+
+########################## Certificates Web/HTML View #######################
+FEATURES['CERTIFICATES_HTML_VIEW'] = True
+
+################################# DJANGO-REQUIRE ###############################
+
+# Whether to run django-require in debug mode.
+REQUIRE_DEBUG = DEBUG
 
 ###############################################################################
 # See if the developer has any local overrides.

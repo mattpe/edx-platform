@@ -12,7 +12,7 @@ import os
 import urlparse
 from contextlib import contextmanager
 from datetime import datetime
-from path import path
+from path import Path as path
 from bok_choy.javascript import js_defined
 from bok_choy.web_app_test import WebAppTest
 from bok_choy.promise import EmptyPromise, Promise
@@ -24,6 +24,7 @@ from xmodule.partitions.tests.test_partitions import MockUserPartitionScheme
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from unittest import TestCase
 
 
 from ..pages.common import BASE_URL
@@ -66,8 +67,7 @@ def is_youtube_available():
 
     youtube_api_urls = {
         'main': 'https://www.youtube.com/',
-        'player': 'http://www.youtube.com/iframe_api',
-        'metadata': 'http://gdata.youtube.com/feeds/api/videos/',
+        'player': 'https://www.youtube.com/iframe_api',
         # For transcripts, you need to check an actual video, so we will
         # just specify our default video and see if that one is available.
         'transcript': 'http://video.google.com/timedtext?lang=en&v=3_yD_cEKoCk',
@@ -90,9 +90,17 @@ def load_data_str(rel_path):
     Load a file from the "data" directory as a string.
     `rel_path` is the path relative to the data directory.
     """
-    full_path = path(__file__).abspath().dirname() / "data" / rel_path  # pylint: disable=no-value-for-parameter
+    full_path = path(__file__).abspath().dirname() / "data" / rel_path
     with open(full_path) as data_file:
         return data_file.read()
+
+
+def remove_file(filename):
+    """
+    Remove a file if it exists
+    """
+    if os.path.exists(filename):
+        os.remove(filename)
 
 
 def disable_animations(page):
@@ -282,7 +290,7 @@ def get_modal_alert(browser):
     return browser.switch_to.alert
 
 
-class EventsTestMixin(object):
+class EventsTestMixin(TestCase):
     """
     Helpers and setup for running tests that evaluate events emitted
     """
@@ -326,7 +334,7 @@ class EventsTestMixin(object):
                 captured_events.append(event)
 
     @contextmanager
-    def assert_events_match_during(self, event_filter=None, expected_events=None):
+    def assert_events_match_during(self, event_filter=None, expected_events=None, in_order=True):
         """
         Context manager that ensures that events matching the `event_filter` and `expected_events` are emitted.
 
@@ -343,7 +351,7 @@ class EventsTestMixin(object):
         with self.capture_events(event_filter, len(expected_events), captured_events):
             yield
 
-        self.assert_events_match(expected_events, captured_events)
+        self.assert_events_match(expected_events, captured_events, in_order=in_order)
 
     def wait_for_events(self, start_time=None, event_filter=None, number_of_matches=1, timeout=None):
         """
@@ -469,17 +477,29 @@ class EventsTestMixin(object):
 
         self.assertEquals(len(matching_events), 0, description)
 
-    def assert_events_match(self, expected_events, actual_events):
+    def assert_events_match(self, expected_events, actual_events, in_order=True):
+        """Assert that each actual event matches one of the expected events.
+
+        Args:
+            expected_events (List): a list of dicts representing the expected events.
+            actual_events (List): a list of dicts that were actually recorded.
+            in_order (bool): if True then the events must be in the same order (defaults to True).
         """
-        Assert that each item in the expected events sequence matches its counterpart at the same index in the actual
-        events sequence.
-        """
-        for expected_event, actual_event in zip(expected_events, actual_events):
-            assert_event_matches(
-                expected_event,
-                actual_event,
-                tolerate=EventMatchTolerates.lenient()
-            )
+        if in_order:
+            for expected_event, actual_event in zip(expected_events, actual_events):
+                assert_event_matches(
+                    expected_event,
+                    actual_event,
+                    tolerate=EventMatchTolerates.lenient()
+                )
+        else:
+            for expected_event in expected_events:
+                actual_event = next(event for event in actual_events if is_matching_event(expected_event, event))
+                assert_event_matches(
+                    expected_event,
+                    actual_event or {},
+                    tolerate=EventMatchTolerates.lenient()
+                )
 
     def relative_path_to_absolute_uri(self, relative_path):
         """Return an aboslute URI given a relative path taking into account the test context."""
@@ -674,4 +694,4 @@ class TestWithSearchIndexMixin(object):
 
     def _cleanup_index_file(self):
         """ Removes search index backing file """
-        os.remove(self.TEST_INDEX_FILENAME)
+        remove_file(self.TEST_INDEX_FILENAME)

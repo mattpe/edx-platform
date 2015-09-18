@@ -5,12 +5,12 @@ import copy
 import logging
 import textwrap
 from lxml import etree
-from path import path
+from path import Path as path
 from fs.errors import ResourceNotFoundError
 from pkg_resources import resource_string
 
 import dogstats_wrapper as dog_stats_api
-from xmodule.annotator_mixin import html_to_text
+from xmodule.util.misc import escape_html_characters
 from xmodule.contentstore.content import StaticContent
 from xmodule.editing_module import EditingDescriptor
 from xmodule.edxnotes_utils import edxnotes
@@ -84,10 +84,12 @@ class HtmlModule(HtmlModuleMixin):
     """
     Module for putting raw html in a course
     """
-    pass
+    @XBlock.supports("multi_device")
+    def student_view(self, context):
+        return super(HtmlModule, self).student_view(context)
 
 
-class HtmlDescriptor(HtmlFields, XmlDescriptor, EditingDescriptor):
+class HtmlDescriptor(HtmlFields, XmlDescriptor, EditingDescriptor):  # pylint: disable=abstract-method
     """
     Module for putting raw html in a course
     """
@@ -95,6 +97,7 @@ class HtmlDescriptor(HtmlFields, XmlDescriptor, EditingDescriptor):
     module_class = HtmlModule
     filename_extension = "xml"
     template_dir_name = "html"
+    show_in_read_only_mode = True
 
     js = {'coffee': [resource_string(__name__, 'js/src/html/edit.coffee')]}
     js_module_name = "HTMLEditingDescriptor"
@@ -134,7 +137,7 @@ class HtmlDescriptor(HtmlFields, XmlDescriptor, EditingDescriptor):
         Show them only if use_latex_compiler is set to True in
         course settings.
         """
-        return ('latex' not in template['template_id'] or course.use_latex_compiler)
+        return 'latex' not in template['template_id'] or course.use_latex_compiler
 
     def get_context(self):
         """
@@ -263,18 +266,28 @@ class HtmlDescriptor(HtmlFields, XmlDescriptor, EditingDescriptor):
 
     @property
     def non_editable_metadata_fields(self):
+        """
+        `use_latex_compiler` should not be editable in the Studio settings editor.
+        """
         non_editable_fields = super(HtmlDescriptor, self).non_editable_metadata_fields
         non_editable_fields.append(HtmlDescriptor.use_latex_compiler)
         return non_editable_fields
 
     def index_dictionary(self):
         xblock_body = super(HtmlDescriptor, self).index_dictionary()
-        # Removing HTML-encoded non-breaking space characters
-        html_content = re.sub(r"(\s|&nbsp;|//)+", " ", html_to_text(self.data))
-        # Removing HTML CDATA
-        html_content = re.sub(r"<!\[CDATA\[.*\]\]>", "", html_content)
-        # Removing HTML comments
-        html_content = re.sub(r"<!--.*-->", "", html_content)
+        # Removing script and style
+        html_content = re.sub(
+            re.compile(
+                r"""
+                    <script>.*?</script> |
+                    <style>.*?</style>
+                """,
+                re.DOTALL |
+                re.VERBOSE),
+            "",
+            self.data
+        )
+        html_content = escape_html_characters(html_content)
         html_body = {
             "html_content": html_content,
             "display_name": self.display_name,

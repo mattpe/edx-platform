@@ -1,5 +1,5 @@
-define(["jquery", "underscore", "underscore.string", "js/common_helpers/ajax_helpers",
-        "js/common_helpers/template_helpers", "js/spec_helpers/edit_helpers",
+define(["jquery", "underscore", "underscore.string", "common/js/spec_helpers/ajax_helpers",
+        "common/js/spec_helpers/template_helpers", "js/spec_helpers/edit_helpers",
         "js/views/pages/container", "js/views/pages/paged_container", "js/models/xblock_info", "jquery.simulate"],
     function ($, _, str, AjaxHelpers, TemplateHelpers, EditHelpers, ContainerPage, PagedContainerPage, XBlockInfo) {
 
@@ -552,7 +552,7 @@ define(["jquery", "underscore", "underscore.string", "js/common_helpers/ajax_hel
                         var clickNewComponent;
 
                         clickNewComponent = function (index) {
-                            containerPage.$(".new-component .new-component-type a.single-template")[index].click();
+                            containerPage.$(".new-component .new-component-type button.single-template")[index].click();
                         };
 
                         it('Attaches a handler to new component button', function() {
@@ -567,6 +567,25 @@ define(["jquery", "underscore", "underscore.string", "js/common_helpers/ajax_hel
                         it('sends the correct JSON to the server', function () {
                             renderContainerPage(this, mockContainerXBlockHtml);
                             clickNewComponent(0);
+                            EditHelpers.verifyXBlockRequest(requests, {
+                                "category": "discussion",
+                                "type": "discussion",
+                                "parent_locator": "locator-group-A"
+                            });
+                        });
+
+                        it('also works for older-style add component links', function () {
+                            // Some third party xblocks (problem-builder in particular) expect add
+                            // event handlers on custom <a> add buttons which is what the platform
+                            // used to use instead of <button>s.
+                            // This can be removed once there is a proper API that XBlocks can use
+                            // to add children or allow authors to add children.
+                            renderContainerPage(this, mockContainerXBlockHtml);
+                            $(".add-xblock-component-button").each(function() {
+                                var htmlAsLink = $($(this).prop('outerHTML').replace(/(<\/?)button/g, "$1a"));
+                                $(this).replaceWith(htmlAsLink);
+                            });
+                            $(".add-xblock-component-button").first().click();
                             EditHelpers.verifyXBlockRequest(requests, {
                                 "category": "discussion",
                                 "type": "discussion",
@@ -598,7 +617,7 @@ define(["jquery", "underscore", "underscore.string", "js/common_helpers/ajax_hel
                             var showTemplatePicker, verifyCreateHtmlComponent;
 
                             showTemplatePicker = function () {
-                                containerPage.$('.new-component .new-component-type a.multiple-templates')[0].click();
+                                containerPage.$('.new-component .new-component-type button.multiple-templates')[0].click();
                             };
 
                             verifyCreateHtmlComponent = function (test, templateIndex, expectedRequest) {
@@ -606,7 +625,7 @@ define(["jquery", "underscore", "underscore.string", "js/common_helpers/ajax_hel
                                 renderContainerPage(test, mockContainerXBlockHtml);
                                 showTemplatePicker();
                                 xblockCount = containerPage.$('.studio-xblock-wrapper').length;
-                                containerPage.$('.new-component-html a')[templateIndex].click();
+                                containerPage.$('.new-component-html button')[templateIndex].click();
                                 EditHelpers.verifyXBlockRequest(requests, expectedRequest);
                                 AjaxHelpers.respondWithJson(requests, {"locator": "new_item"});
                                 respondWithHtml(mockXBlockHtml);
